@@ -1,4 +1,4 @@
-% below is the parameter derivation for the 2 experiments
+% Below is the parameter derivation for the 2 experiments
 
 k2=zeros(1,5);
 m1=zeros(1,5);
