@@ -1,17 +1,16 @@
+% below is the parameter derivation for the 2 experiments
+
 k2=zeros(1,5);
 m1=zeros(1,5);
 m2=zeros(1,5);
 d1=zeros(1,5);
 d2=zeros(1,5);
 U=0.75;
-i=1;
 
-%% 
+% experiment 1, holding the top disk (disk 1)
 
-plot(t_received(1,1:4400),cart1pos(1,1:4400))
-
-
-%% 
+for i=1:5
+load(['tophold_075v_05hz/tophold' num2str(i) '.mat'])
 
 t=t_received(1,1:4400);
 y=cart1pos(1,1:4400);
@@ -26,33 +25,35 @@ t2=t_received(1,(t2+3000));
 %y2=y2/1000*2*pi;
 %yinf=yinf/1000*2*pi;
 
+% using characteristics of plotted data to find natural and damped frequency of step response
+
 n=2;
 wd=2*pi*n/(t2-t0);
 bwn=1/(t2-t0)*log((y0-yinf)/(y2-yinf));
 wn=sqrt((wd^2)+(bwn^2));
 b=bwn/wn;
 
+% converting natural frequency to k, m, & d parameters
 
 k2(1,i)=U/yinf;
 m1(1,i)=k2(1,i)*(wn^-2);
 d1(1,i)=k2(1,i)*2*b/wn;
 
-i=i+1;
+end
 
-%% 
+% experiment 2, holding the bottom disk (disk 2)
 
-i=1;
+for i=1:5
 
-%% 
+load(['bottomhold_075v_01hz/bottomhold' num2stri(i) 'mat'])
 
-plot(t_received(1,1:8000),(cart2pos(1,1:8000)-cart2pos(1,8000)))
-
-%% 
 [pks,locs]=findpeaks((cart2pos(1,1:8000)-cart2pos(1,8000))*2*pi/1000,t_received(1,1:8000));
 Td=mean(diff(locs(1,1:12)));
 wd=2*pi/Td;
 
-delta=zeros(1,10);
+% finding natural frequency and other parameters from characteristics of impulse response graph
+
+delta=zeros(1,10); 
 for j=1:10
     u1=pks(j);
     u2=pks(j+1);
@@ -66,7 +67,7 @@ wn2=wd/sqrt(1-zeta^2);
 m2(1,i)=mean(k2)*wn2^-2;
 d2(1,i)=2*m2(1,i)*zeta*wn2;
 
-i=i+1;
+end
 %% 
 
-save('MAE171correctparameters2',"k2","d1","m1","d2","m2")
+save('correctparameters2',"k2","d1","m1","d2","m2")
